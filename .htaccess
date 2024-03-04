@@ -1,0 +1,80 @@
+# BEGIN Custom Redirects
+
+# Redirect www to non-www version of the site
+RewriteCond %{HTTP_HOST} ^www\.example\.com$ [NC]
+RewriteRule ^(.*)$ http://example.com/$1 [R=301,L]
+
+# Redirect old page to new page
+Redirect 301 /old-page.html /new-page.html
+
+# END Custom Redirects
+
+# BEGIN Custom Error Pages
+
+# Error page for 404 not found errors
+ErrorDocument 404 /404.php
+
+# Error page for 500 server errors
+ErrorDocument 500 /500.php
+
+# END Custom Error Pages
+
+# BEGIN Custom Security Measures
+
+# Block access to specific files and directories
+<FilesMatch "^(config\.php|\.htaccess|robots\.txt)">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+# Disable directory browsing
+Options -Indexes
+
+# END Custom Security Measures
+
+# BEGIN Custom Cache-Control Headers
+
+# Set cache-control header for static files to 1 year
+<FilesMatch "\.(jpg|jpeg|png|gif|js|css|ico)$">
+Header set Cache-Control "max-age=31536000, public"
+</FilesMatch>
+
+# END Custom Cache-Control Headers
+
+# BEGIN Custom Headers
+
+# Add X-Frame-Options header to prevent clickjacking attacks
+Header always append X-Frame-Options SAMEORIGIN
+
+# Add X-XSS-Protection header to prevent cross-site scripting attacks
+Header always set X-XSS-Protection "1; mode=block"
+
+# Add X-Content-Type-Options header to prevent MIME sniffing attacks
+Header always set X-Content-Type-Options nosniff
+
+# END Custom Headers
+
+# BEGIN WordPress
+# The directives (lines) between "BEGIN WordPress" and "END WordPress" are
+# dynamically generated, and should only be modified via WordPress filters.
+# Any changes to the directives between these markers will be overwritten.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress
+
+# BEGIN LiteSpeed
+# The directives (lines) between "BEGIN LiteSpeed" and "END LiteSpeed" are
+# dynamically generated, and should only be modified via WordPress filters.
+# Any changes to the directives between these markers will be overwritten.
+<IfModule Litespeed>
+SetEnv noabort 1
+</IfModule>
+# END LiteSpeed
